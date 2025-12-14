@@ -1,0 +1,212 @@
+openapi: 3.0.3
+info:
+  title: Notes API
+  version: 1.0.0
+  description: REST API для управления заметками (CRUD операции)
+  contact:
+    name: Институт перспективных технологий
+    email: example@university.ru
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Локальный сервер разработки
+
+paths:
+  /notes:
+    get:
+      summary: Получить все заметки
+      description: Возвращает список всех заметок в системе
+      tags:
+        - notes
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Note'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    
+    post:
+      summary: Создать новую заметку
+      description: Создает новую заметку с предоставленными данными
+      tags:
+        - notes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteCreateRequest'
+      responses:
+        '201':
+          description: Заметка успешно создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+
+  /notes/{id}:
+    get:
+      summary: Получить заметку по ID
+      description: Возвращает конкретную заметку по её ID
+      tags:
+        - notes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID заметки
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '404':
+          description: Заметка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    
+    put:
+      summary: Обновить заметку
+      description: Обновляет существующую заметку предоставленными данными
+      tags:
+        - notes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID заметки
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteUpdateRequest'
+      responses:
+        '200':
+          description: Заметка успешно обновлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '400':
+          description: Неверный запрос
+        '404':
+          description: Заметка не найдена
+    
+    delete:
+      summary: Удалить заметку
+      description: Удаляет конкретную заметку по её ID
+      tags:
+        - notes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID заметки
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Заметка успешно удалена
+        '404':
+          description: Заметка не найдена
+
+components:
+  schemas:
+    Note:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        title:
+          type: string
+          example: Моя заметка
+        content:
+          type: string
+          example: Содержание заметки
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-12-10T10:30:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2025-12-10T11:00:00Z"
+    
+    NoteCreateRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          example: Новая заметка
+        content:
+          type: string
+          example: Текст заметки
+    
+    NoteUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+          example: Обновленный заголовок
+        content:
+          type: string
+          nullable: true
+          example: Обновленный текст
+    
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: сообщение об ошибке
+        message:
+          type: string
+          example: Дополнительное описание
+  
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Введите токен в формате: Bearer <token>
+
+security:
+  - BearerAuth: []

@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/ybotet/notes-api/internal/http/handlers"
+	"github.com/ybotet/pz12-notes-api/internal/http/handlers"
 )
 
 func NewRouter(h *handlers.Handler) *chi.Mux {

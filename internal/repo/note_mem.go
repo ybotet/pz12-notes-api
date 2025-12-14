@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ybotet/notes-api/internal/core"
+	"github.com/ybotet/pz12-notes-api/internal/core"
 )
 
-// Definir la interfaz en el paquete repo
+// NoteRepository определяет интерфейс для доступа к данным заметок
 type NoteRepository interface {
 	Create(ctx context.Context, note core.Note) (int64, error)
 	GetByID(ctx context.Context, id int64) (*core.Note, error)
@@ -18,7 +18,7 @@ type NoteRepository interface {
 	Delete(ctx context.Context, id int64) error
 }
 
-// Implementación concreta
+// NoteRepoMem реализует NoteRepository
 type NoteRepoMem struct {
 	mu    sync.RWMutex
 	notes map[int64]*core.Note
@@ -50,10 +50,10 @@ func (r *NoteRepoMem) GetByID(ctx context.Context, id int64) (*core.Note, error)
 
 	note, exists := r.notes[id]
 	if !exists {
-		return nil, errors.New("nota no encontrada")
+		return nil, errors.New("заметка не найдена")
 	}
 
-	// Retornar una copia
+	// Вернуть копию
 	noteCopy := *note
 	return &noteCopy, nil
 }
@@ -76,7 +76,7 @@ func (r *NoteRepoMem) Update(ctx context.Context, id int64, updatedNote core.Not
 
 	_, exists := r.notes[id]
 	if !exists {
-		return errors.New("nota no encontrada")
+		return errors.New("заметка не найдена")
 	}
 
 	updatedNote.ID = id
@@ -93,7 +93,7 @@ func (r *NoteRepoMem) Delete(ctx context.Context, id int64) error {
 
 	_, exists := r.notes[id]
 	if !exists {
-		return errors.New("nota no encontrada")
+		return errors.New("заметка не найдена")
 	}
 
 	delete(r.notes, id)

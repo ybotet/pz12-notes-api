@@ -1,0 +1,211 @@
+basePath: /api/v1
+definitions:
+  core.ErrorResponse:
+    description: Общий ответ об ошибке для API
+    properties:
+      error:
+        example: сообщение об ошибке
+        type: string
+      message:
+        example: Дополнительное описание
+        type: string
+    type: object
+  core.Note:
+    description: Основная структура заметки
+    properties:
+      content:
+        type: string
+      createdAt:
+        type: string
+      id:
+        format: int64
+        type: integer
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  core.NoteCreateRequest:
+    description: Структура для создания новой заметки
+    properties:
+      content:
+        example: Текст заметки
+        type: string
+      title:
+        example: Моя первая заметка
+        type: string
+    type: object
+  core.NoteUpdateRequest:
+    description: Структура для обновления существующей заметки (частично)
+    properties:
+      content:
+        example: Обновленный текст
+        type: string
+      title:
+        example: Обновленный заголовок
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact:
+    email: example@university.ru
+    name: Институт перспективных технологий
+  description: REST API для управления заметками (CRUD).
+  title: Notes API
+  version: "1.0"
+paths:
+  /api/v1/notes:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список всех заметок в системе
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/core.Note'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Получить все заметки
+      tags:
+      - notes
+    post:
+      consumes:
+      - application/json
+      description: Создает новую заметку с предоставленными данными
+      parameters:
+      - description: Данные новой заметки
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/core.NoteCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/core.Note'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Создать новую заметку
+      tags:
+      - notes
+  /api/v1/notes/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет конкретную заметку по её ID
+      parameters:
+      - description: ID заметки
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Удалить заметку
+      tags:
+      - notes
+    get:
+      consumes:
+      - application/json
+      description: Возвращает конкретную заметку по её ID
+      parameters:
+      - description: ID заметки
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/core.Note'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Получить заметку по ID
+      tags:
+      - notes
+    put:
+      consumes:
+      - application/json
+      description: Обновляет существующую заметку предоставленными данными (частичное
+        обновление)
+      parameters:
+      - description: ID заметки
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Поля для обновления
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/core.NoteUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/core.Note'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/core.ErrorResponse'
+      summary: Обновить существующую заметку
+      tags:
+      - notes
+securityDefinitions:
+  BearerAuth:
+    description: 'Введите токен в формате: Bearer <token>'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
