@@ -1,0 +1,66 @@
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Binario del proyecto
+pz12-notes-api
+/pz12-notes-api.exe
+
+# Go modules
+/vendor/
+
+# VSCode
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Swagger - NO incluir archivos generados automáticamente
+/docs/swagger.json
+/docs/swagger.yaml
+/docs/docs.go
+# Pero SÍ incluir nuestro index.html personalizado
+!/docs/index.html
+
+# Capturas de pantalla temporales
+/screenshots/
+# Pero mantener README de screenshots si existe
+!/screenshots/README.md
+
+# Variables de entorno
+.env
+.env.local
+
+# Logs
+*.log
+logs/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+
+# Temporal
+tmp/
+temp/
+
+# Coverage
+coverage.*
+htmlcov/
+
+# Go modules
+go.sum
